@@ -1,7 +1,7 @@
 
 
 
-class Base:
+class BeliefBase:
     # Belief base class #
     def __init__(self):
         self.beliefs = set([])
