@@ -1,0 +1,2 @@
+def cnf(belief):
+    return
