@@ -16,7 +16,7 @@ t_BICONDITIONAL = r'<->|<=>'  # Match <-> or <=>
 t_NOT = r'\bnot\b|-(?!>)|~'  # Match not or - (not succeeded by '>') or ~
 t_LPAREN = r'\('  # Match (
 t_RPAREN = r'\)'  # Match )
-t_PROPOSITION = r'[a-zA-Z]'  # Match any single char, upper or lowercase
+t_PROPOSITION = r'[a-z]'  # Match any single char, upper or lowercase
 
 # Ignored characters
 t_ignore = " \t"
