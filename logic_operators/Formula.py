@@ -20,5 +20,8 @@ class Formula:
         """
         return self.__str__() == other.__str__()
 
+    def __lt__(self, other):
+        return self.__str__() < other.__str__()
+
     def __hash__(self):
         return hash(self.__str__())
