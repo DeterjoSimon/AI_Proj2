@@ -6,4 +6,4 @@ from logic_operators.And import And
 from logic_operators.Or import Or
 from logic_operators.Implication import Implication
 from logic_operators.Biconditional import Biconditional
-from logic_operators.Group import Par
+from logic_operators.Par import Par

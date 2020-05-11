@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from entailment import entailment, get_literals, resolve
+from entailment import entailment
+from resolution import get_literals, resolve
 from logic_operators import *
 
 
@@ -28,6 +29,26 @@ class TestEntailment(TestCase):
         # Test if the formula: Not(p) is entailed from the KB
         assert entailment(clauses, Not(p))
 
+    def test_entailment_2(self):
+        """
+        Test entailment on KB:
+            {-p -> q, q -> p, p -> r & s}
+
+        Formula for entailment:
+            p & r & s
+        """
+        p = self.p
+        q = Proposition('q')
+        r = self.r
+        s = self.s
+
+        # KB in CNF and split into clauses
+        clauses = {Or(p, q), Or(Not(q), p), Or(Not(p), r), Or(Not(p), s)}
+
+        phi = And(And(p, r), s)
+        # Test if the formula: Not(p) is entailed from the KB
+        assert entailment(clauses, phi)
+
     def test_entailment_fail(self):
         """
         Test entailment on KB:
@@ -44,62 +65,3 @@ class TestEntailment(TestCase):
 
         # Test if the formula: -p & r is entailed from the KB
         assert not entailment(clauses, And(Not(p), r))
-
-    def test_get_literals(self):
-        r = self.r
-        p = self.p
-
-        clause = Or(Not(r), Or(p, r))
-        assert get_literals(clause) == [Not(r), p, r]
-
-    def test_resolve_unit(self):
-        """
-        Resolve in unit resolution
-        """
-        r = self.r
-        p = self.p
-
-        clause1 = Or(Not(p), r)
-        clause2 = Not(r)
-
-        assert resolve(clause1, clause2)[0] == Not(p)
-
-    def test_resolve_full(self):
-        """
-        Resolve in full resolution
-        """
-        r = self.r
-        p = self.p
-        s = self.s
-
-        clause1 = Or(Or(Not(p), Not(r)), s)
-        clause2 = Or(p, r)
-
-        resolvents = resolve(clause1, clause2)
-        assert resolvents[0] == Or(Or(r, s), Not(r)) and resolvents[1] == Or(Or(p, s), Not(p))
-
-    def test_resolve_factor(self):
-        """
-        Resolve for two simple clauses
-        """
-        r = self.r
-        p = self.p
-
-        clause1 = Or(r, p)
-        clause2 = Or(r, Not(p))
-
-        assert resolve(clause1, clause2)[0] == r
-
-    def test_resolve_no_resolvents(self):
-        """
-        Resolve on clauses which results in no resolvents
-        """
-        r = self.r
-        p = self.p
-        s = self.s
-        t = Proposition("t")
-
-        clause1 = Or(r, p)
-        clause2 = Or(s, Not(t))
-
-        assert not resolve(clause1, clause2)
