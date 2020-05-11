@@ -13,3 +13,12 @@ class Formula:
         """
         for f in self.formulas:
             return f.__str__()
+
+    def __eq__(self, other):
+        """
+        Compare string representation of formulas
+        """
+        return self.__str__() == other.__str__()
+
+    def __hash__(self):
+        return hash(self.__str__())
