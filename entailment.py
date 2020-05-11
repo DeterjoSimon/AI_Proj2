@@ -4,6 +4,14 @@ from logic_operators import *
 
 
 # If you read this, you have the big gay
+def disjunct(values):
+    # Base step
+    if len(values) == 1:
+        return values[0]
+
+    # Recursion step
+    return Or(values[0], disjunct(values[1:]))
+
 
 def get_literals(clause):
     if isinstance(clause, Not) or isinstance(clause, Proposition):
@@ -15,57 +23,64 @@ def get_literals(clause):
         return get_literals(clause.formulas[0]) + get_literals(clause.formulas[1])
 
 
-def resolve(clause1, clause2):
-    literals1 = get_literals(clause1)
-    literals2 = get_literals(clause2)
+def resolve(cl_i, cl_j):
+    literals1 = get_literals(cl_i)
+    literals2 = get_literals(cl_j)
 
-    def disjunct(values):
-        if len(values) == 1:
-            return values[0]
-
-        return Or(values[0], disjunct(values[1:]))
-
-    new_clauses = []
-
+    resolvents = []
     # Check for complimentary pairs
-    for lit1 in literals1:
-        for lit2 in literals2:
-            if Not(lit1) == lit2 or lit1 == Not(lit2):
+    for lit_i in literals1:
+        for lit_j in literals2:
+            if Not(lit_i) == lit_j or lit_i == Not(lit_j):
                 # Remove complimentary pair
-                new_lit1 = [x for x in literals1 if x != lit1]
-                new_lit2 = [x for x in literals2 if x != lit2]
+                new_lit1 = [x for x in literals1 if x != lit_i]
+                new_lit2 = [x for x in literals2 if x != lit_j]
 
                 # Factor
                 combined = list(set(new_lit2 + new_lit1))
                 combined.sort()
 
                 # Combine results in disjunction
-                new_clauses.append(disjunct(combined))
+                if len(combined) != 0:
+                    resolvents.append(disjunct(combined))
+                # Add the empty set otherwise
+                else:
+                    resolvents.append(False)
 
-    return new_clauses
+    return resolvents
 
 
 def entailment(kb, phi):
-    clauses: Set = kb  # TODO: Insert CNF function here
-
+    """
+    Figure 7.12 in the book
+    """
     # Negate phi
     if isinstance(phi, Not):
         phi = phi.formulas[0]
     else:
         phi = Not(phi)
 
-    clauses.add(phi)
+    clauses: Set = kb.union({phi})  # TODO: Insert CNF function here
 
-    # Pair all clauses
-    for clause1 in clauses:
-        for clause2 in clauses:
-            res_clause = resolve(clause1, clause2)
+    new = set()
 
-            # If empty set is found (unsatisfiable) then entailment is true
-            if not res_clause and isinstance(res_clause, Set):
-                return True
+    while True:
+        # Pair all clauses and apply resolution
+        for cl_i in clauses:
+            for cl_j in clauses:
+                res_clause = resolve(cl_i, cl_j)
 
-            clauses.add(res_clause)
+                # If empty set is found (unsatisfiable) then entailment is true
+                if False in res_clause:
+                    return True
 
-    # Fail safe, does not entail
-    return False
+                # Add clause to resolution clauses
+                for clause in res_clause:
+                    new.add(clause)
+
+        # No new clauses have been added
+        if new.issubset(clauses):
+            return False
+
+        clauses = clauses.union(new)
+

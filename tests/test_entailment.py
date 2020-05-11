@@ -28,6 +28,23 @@ class TestEntailment(TestCase):
         # Test if the formula: Not(p) is entailed from the KB
         assert entailment(clauses, Not(p))
 
+    def test_entailment_fail(self):
+        """
+        Test entailment on KB:
+            p <-> r
+
+        Formula for entailment:
+            -p & r
+        """
+        r = self.r
+        p = self.p
+
+        # KB in CNF and split into clauses
+        clauses = {And(Or(Not(p), r), Or(Not(r), p))}
+
+        # Test if the formula: -p & r is entailed from the KB
+        assert not entailment(clauses, And(Not(p), r))
+
     def test_get_literals(self):
         r = self.r
         p = self.p
@@ -72,3 +89,17 @@ class TestEntailment(TestCase):
         clause2 = Or(r, Not(p))
 
         assert resolve(clause1, clause2)[0] == r
+
+    def test_resolve_no_resolvents(self):
+        """
+        Resolve on clauses which results in no resolvents
+        """
+        r = self.r
+        p = self.p
+        s = self.s
+        t = Proposition("t")
+
+        clause1 = Or(r, p)
+        clause2 = Or(s, Not(t))
+
+        assert not resolve(clause1, clause2)
