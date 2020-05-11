@@ -1,6 +1,5 @@
 from unittest import TestCase
 
-from Belief_base.belief_base import BeliefBase
 from cnf import cnf
 from logic_operators import *
 
