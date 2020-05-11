@@ -5,11 +5,11 @@ class Formula:
 
         self.formulas = list(formula)
 
-    def to_str(self):
+    def __str__(self):
         """
         Traverse the formula (tree) in-order.
 
         :return: str
         """
         for f in self.formulas:
-            return f.to_str()
+            return f.__str__()

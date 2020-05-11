@@ -11,5 +11,5 @@ class Proposition(Formula):
 
         super().__init__(*formula)
 
-    def to_str(self):
+    def __str__(self):
         return self.formulas[0]

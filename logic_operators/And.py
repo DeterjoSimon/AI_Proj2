@@ -8,15 +8,5 @@ class And(Formula):
 
         super().__init__(*formula)
 
-    def to_str(self):
-        return self.formulas[0].to_str() + " ∧ " + self.formulas[1].to_str()
-
-
-
-
-
-
-
-
-
-
+    def __str__(self):
+        return self.formulas[0].__str__() + " ∧ " + self.formulas[1].__str__()

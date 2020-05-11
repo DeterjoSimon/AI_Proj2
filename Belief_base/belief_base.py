@@ -15,13 +15,13 @@ class BeliefBase:
             for subsets in self.beliefs:
                 print("{", end = "")
                 for belief in subsets:
-                    print(belief.to_str(), end = "")
+                    print(belief.__str__(), end ="")
                     print(", ", end = "")
                 print("},", end = "")
 
         else:
             for belief in self.beliefs:
-                print(belief.to_str() + ", ", end = "")
+                print(belief.__str__() + ", ", end ="")
         print("}")
 
     # Belief base expansion #

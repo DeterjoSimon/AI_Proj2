@@ -9,8 +9,8 @@ class Not(Formula):
 
         super().__init__(*formula)
 
-    def to_str(self):
-        return "¬" + self.formulas[0].to_str()
+    def __str__(self):
+        return "¬" + self.formulas[0].__str__()
 
 
 
