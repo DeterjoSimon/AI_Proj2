@@ -5,7 +5,7 @@ from logic_operators import *
 from resolution import resolve
 
 
-def entailment(kb, phi):
+def entails(kb, phi):
     """
     Figure 7.12 in the book
     """

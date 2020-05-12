@@ -1,8 +1,8 @@
-from typing import Set
 import itertools
+from typing import Set
 
-from entailment import entailment
-
+from entailment import entails
+from logic_operators import Not
 
 class Belief:
     def __init__(self, formula, order=0):
@@ -21,24 +21,12 @@ class Belief:
 
 
 class BeliefBase:
-    def __init__(self, kb: Set[Belief] = None):
+    def __init__(self, kb: Set[Belief] = None, selection_function=None):
+        self.selection_function = selection_function
         if kb is None:
-            kb = {}
+            kb = set()
 
         self.beliefs: Set[Belief] = kb
-
-    def clear(self):
-        self.beliefs = set()
-
-    def add(self, belief: Belief):
-        self.beliefs.add(belief)
-
-    def revise(self, new_belief):
-        pass
-
-    def expansion(self, new_belief):
-        if new_belief not in self.beliefs:
-            self.beliefs.add(new_belief)
 
     def _get_remainders(self, phi):
         """
@@ -46,7 +34,7 @@ class BeliefBase:
         """
 
         # Local function for finding all subsets
-        def findsubsets(s, n):
+        def find_subsets(s, n):
             return list(set(combination) for combination in itertools.combinations(s, n))
 
         N = len(self.beliefs) - 1
@@ -54,7 +42,7 @@ class BeliefBase:
 
         # Start with n - 1 size subsets and iterate to 1
         for n in range(N, 0, -1):
-            n_size_subsets = findsubsets(self.beliefs, n)
+            n_size_subsets = find_subsets(self.beliefs, n)
 
             for subset in n_size_subsets:
                 # Check for a larger subset
@@ -65,25 +53,56 @@ class BeliefBase:
 
                 # Create clauses of formulas and check that it does not entail phi
                 clauses = [belief.formula for belief in subset]
-                if not entailment(clauses, phi.formula):
+                if not entails(clauses, phi.formula):
                     remainders.append(subset)
 
         return remainders
 
-    def contraction(self, remove_belief):
+    def clear(self):
+        self.beliefs = set()
+
+    def expand(self, new_belief):
+        # Do not add tautologies or contradictions
+        if entails({}, new_belief) or not entails({}, new_belief):
+            return
+
+        self.beliefs.add(new_belief)
+
+    def revise(self, new_belief):
+        # Do not add tautologies or contradictions
+        if entails({}, new_belief) or not entails({}, new_belief):
+            return
+
+        not_belief = new_belief
+        not_belief.formula = Not(not_belief.formula)
+
+        # Levi identity
+        self.contract(not_belief)
+        self.expand(new_belief)
+
+    def contract(self, remove_belief):
         """
         Entrenchment based contraction
         """
+        if not self.selection_function:
+            raise AttributeError("Selection function not specified")
+
         # Get remainders of contracting with the belief
         remainders = self._get_remainders(remove_belief)
 
-        # 3. Partial Meet Contraction
+        # If the remainder is empty, return the belief base
+        if not len(remainders):
+            return self.beliefs
 
-        return None
+        # Apply selection function
+        best_remainders = self.selection_function(remainders)
+
+        # Return intersection of selected elements
+        return set.intersection(*best_remainders)
 
     def __str__(self):
         out = set()
         for belief in self.beliefs:
             out.add(belief.__str__())
 
-        return out.__str__()
+        return "Knowledge base: " + out.__str__()

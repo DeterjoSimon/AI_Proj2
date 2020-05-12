@@ -29,11 +29,11 @@ class TestBeliefBase(TestCase):
         p = self.p
         q = self.q
 
-        bb.add(Belief(p))
-        bb.add(Belief(q))
-        bb.add(Belief(And(p, q)))
-        bb.add(Belief(Or(p, q)))
-        bb.add(Belief(Implication(p, q)))
+        bb.expand(Belief(p))
+        bb.expand(Belief(q))
+        bb.expand(Belief(And(p, q)))
+        bb.expand(Belief(Or(p, q)))
+        bb.expand(Belief(Implication(p, q)))
 
         remainders = bb._get_remainders(Belief(q))
 
@@ -49,6 +49,8 @@ class TestBeliefBase(TestCase):
 
         Resulting KBs:
             {q}
-
         """
+
+
+
         assert False

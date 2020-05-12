@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from entailment import entailment
+from entailment import entails
 from resolution import get_literals, resolve
 from logic_operators import *
 
@@ -23,7 +23,7 @@ class TestEntailment(TestCase):
         r = self.r
         p = self.p
 
-        assert entailment({p, Implication(p, r)}, r)
+        assert entails({p, Implication(p, r)}, r)
 
     def test_entailment(self):
         """
@@ -42,7 +42,7 @@ class TestEntailment(TestCase):
         clauses = {Or(Or(Not(r), p), s), Or(Not(p), r), Or(Not(s), r), Not(r)}
 
         # Test if the formula: Not(p) is entailed from the KB
-        assert entailment(clauses, Not(p))
+        assert entails(clauses, Not(p))
 
     def test_entailment_2(self):
         """
@@ -61,7 +61,7 @@ class TestEntailment(TestCase):
         clauses = {Or(p, q), Or(Not(q), p), Or(Not(p), r), Or(Not(p), s)}
 
         phi = And(And(p, r), s)
-        assert entailment(clauses, phi)
+        assert entails(clauses, phi)
 
     def test_and_elimination(self):
         """
@@ -72,7 +72,7 @@ class TestEntailment(TestCase):
         p = self.p
         r = self.r
 
-        assert entailment({And(p, r)}, p)
+        assert entails({And(p, r)}, p)
 
     def test_entailment_3(self):
         p = self.p
@@ -81,12 +81,17 @@ class TestEntailment(TestCase):
 
         kb = {And(p, Biconditional(r, Or(p, q)))}
 
-        assert entailment(kb, r)
+        assert entails(kb, r)
 
     def test_entailment_tautology(self):
         p = self.p
 
-        assert entailment({}, Or(p, Not(p)))
+        assert entails({}, Or(p, Not(p)))
+
+    def test_entailment_contradiction(self):
+        p = self.p
+
+        assert not entails({}, Implication(p, Not(p)))
 
     def test_entailment_fail(self):
         """
@@ -103,4 +108,4 @@ class TestEntailment(TestCase):
         clauses = {And(Or(Not(p), r), Or(Not(r), p))}
 
         # Test if the formula: -p & r is entailed from the KB
-        assert not entailment(clauses, And(Not(p), r))
+        assert not entails(clauses, And(Not(p), r))
