@@ -1,0 +1,59 @@
+from unittest import TestCase
+
+from belief_base import BeliefBase, Belief
+from logic_operators import *
+
+
+class TestBeliefBase(TestCase):
+    belief_base = BeliefBase()
+    p = Proposition("p")
+    q = Proposition("q")
+    r = Proposition("r")
+
+    def setUp(self) -> None:
+        self.belief_base.clear()
+
+    def test_remainder(self):
+        """
+        Test contraction for KB:
+            {p, q, p ∧ q, p ∨ q, p → q}
+
+        Contract formula:
+            q
+
+        Resulting remainders:
+            {{p, p ∨ q}, {p → q}}
+        """
+
+        bb = self.belief_base
+        p = self.p
+        q = self.q
+
+        bb.add(Belief(p))
+        bb.add(Belief(q))
+        bb.add(Belief(And(p, q)))
+        bb.add(Belief(Or(p, q)))
+        bb.add(Belief(Implication(p, q)))
+
+        remainders = bb._remainder(q)
+
+        for remainder in remainders:
+            print("======")
+            for r in remainder:
+                print(r)
+
+        assert False
+
+    def test_contraction(self):
+        """
+        Test contraction for KB:
+            {p, q, p ∧ q, p ∨ q, p → q}
+
+        Contract formula:
+            q
+
+        Resulting KBs:
+            {q}
+
+        """
+        assert False

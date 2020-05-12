@@ -15,7 +15,13 @@ def entailment(kb, phi):
     else:
         phi = Not(phi)
 
-    clauses: Set = kb.union({to_cnf(phi)})
+    # Convert to cnf
+    kb_cnf = set()
+
+    for formula in kb:
+        kb_cnf.add(to_cnf(formula))
+
+    clauses: Set = kb_cnf.union({to_cnf(phi)})
 
     new = set()
 

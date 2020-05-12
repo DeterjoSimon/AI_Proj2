@@ -1,53 +1,90 @@
+from typing import Set
+import itertools
 
+from entailment import entailment
+from logic_operators import Not
+
+
+class Belief:
+    def __init__(self, formula, order=0):
+        self.formula = formula
+        self.order = order
+
+    def __str__(self):
+        return self.formula.__str__() + " @ Order: " + self.order.__str__()
 
 
 class BeliefBase:
-    # Belief base class #
-    def __init__(self):
-        self.beliefs = set([])
+    def __init__(self, kb: Set[Belief] = None):
+        if kb is None:
+            kb = {}
 
-    # Printing function #
-    # Subset = True, used for printing after a contraction (as multiple subsets exist) #
-    # Subset = False, used before contraction #
-    def print(self, subset):
-        print("{", end = "")
-        if subset:
-            for subsets in self.beliefs:
-                print("{", end = "")
-                for belief in subsets:
-                    print(belief.__str__(), end ="")
-                    print(", ", end = "")
-                print("},", end = "")
+        self.beliefs: Set[Belief] = kb
 
-        else:
-            for belief in self.beliefs:
-                print(belief.__str__() + ", ", end ="")
-        print("}")
+    def clear(self):
+        self.beliefs = set()
 
-    # Belief base expansion #
-    # Does not have to be consistent #
-    def expansion(self,new_belief):
+    def add(self, belief: Belief):
+        self.beliefs.add(belief)
+
+    def revise(self, new_belief):
+        pass
+
+    def expansion(self, new_belief):
         if new_belief not in self.beliefs:
             self.beliefs.add(new_belief)
 
-    # Method for contraction of belief #
-    # Updates the belief base #
-    # Can create multiple subsets which are contained in the new belief base #
-    def contraction(self, removed_belief):
-        new_belief_base = set([])
+    def _remainder(self, phi):
+        """
+        Find subsets which do not entail phi, disregarding order
+        """
 
-        for belief in self.beliefs:
-            foo = belief.contraction(removed_belief)
-            if foo is not None:
-                new_belief_base.add(tuple([foo]))
+        def findsubsets(s, n):
+            return list(itertools.combinations(s, n))
 
-        self.beliefs = new_belief_base
+        N = len(self.beliefs) - 1
 
-    # Finds the belief set from belief base #
-    # PART 2 #
-    # TODO: From our belief base, which new sentences can we entail?
-    def entailment(self):
+        remainders = []
+
+        # Start with n - 1 size subsets and iterate to 1
+        for n in range(N, 0, -1):
+            n_size_subsets = findsubsets(self.beliefs, n)
+
+            for subset in n_size_subsets:
+                # Create clauses of formulas
+                clauses = set([belief.formula for belief in subset])
+
+                if not entailment(clauses, phi):
+                    remainders += [clauses]
+
+        return remainders
+
+    def contraction(self, remove_belief):
+        """
+        Entrenchment based contraction
+        """
+
+        # 1. Find all subsets of B which do not entail the new formula
+        # for belief in self.beliefs:
+
+        # 2. Get the inclusion-maximal subsets
+
+        # 3. Partial Meet Contraction
+
+        # 4. Suck a dick
+        # dick = Penis("20cm", Color.Black)
+        # mouth = Body.Mouth(gag_reflex=False)
+        # while not dick.cum():
+        #   mouth.insert(dick)
+        #   time.sleep(0.5)
+        #   mouth.remove(dick)
+        #   time.sleep(0.5)
+
         pass
 
+    def __str__(self):
+        out = set()
+        for belief in self.beliefs:
+            out.add(belief.__str__())
 
-
+        return out.__str__()

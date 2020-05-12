@@ -10,6 +10,20 @@ class TestEntailment(TestCase):
     p = Proposition("p")
     r = Proposition("r")
 
+    def test_modus_ponens(self):
+        """
+        KB:
+            {p, p -> q}
+
+        Phi:
+            q
+
+        """
+        r = self.r
+        p = self.p
+
+        assert entailment({p, Implication(p, r)}, r)
+
     def test_entailment(self):
         """
         Test entailment on KB:
@@ -47,6 +61,17 @@ class TestEntailment(TestCase):
 
         phi = And(And(p, r), s)
         assert entailment(clauses, phi)
+
+    def test_and_elimination(self):
+        """
+        KB: {p & r}
+
+        Phi: p
+        """
+        p = self.p
+        r = self.r
+
+        assert entailment({And(p, r)}, p)
 
     def test_entailment_fail(self):
         """
