@@ -2,7 +2,6 @@ from typing import Set
 import itertools
 
 from entailment import entailment
-from logic_operators import Not
 
 
 class Belief:
@@ -61,7 +60,7 @@ class BeliefBase:
                 # Check for a larger subset
                 c_prime_exists = sum([subset.issubset(remainder) for remainder in remainders]) > 0
 
-                if not c_prime_exists:
+                if c_prime_exists:
                     continue
 
                 # Create clauses of formulas and check that it does not entail phi
