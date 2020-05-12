@@ -1,6 +1,6 @@
 from typing import Set
 
-from cnf import to_cnf
+from cnf import to_cnf, cnf_to_clauses
 from logic_operators import *
 from resolution import resolve
 
@@ -16,12 +16,17 @@ def entailment(kb, phi):
         phi = Not(phi)
 
     # Convert to cnf
+    phi_cnf = to_cnf(phi)
+    phi_clause = cnf_to_clauses(phi_cnf)
+
     kb_cnf = set()
 
     for formula in kb:
-        kb_cnf.add(to_cnf(formula))
+        cnf = to_cnf(formula)
+        cnf_clause = cnf_to_clauses(cnf)
+        kb_cnf = kb_cnf.union(cnf_clause)
 
-    clauses: Set = kb_cnf.union({to_cnf(phi)})
+    clauses: Set = kb_cnf.union(phi_clause)
 
     new = set()
 

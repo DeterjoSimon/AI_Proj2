@@ -6,9 +6,10 @@ from logic_operators import *
 
 
 class TestEntailment(TestCase):
-    s = Proposition("s")
     p = Proposition("p")
+    q = Proposition("q")
     r = Proposition("r")
+    s = Proposition("s")
 
     def test_modus_ponens(self):
         """
@@ -72,6 +73,20 @@ class TestEntailment(TestCase):
         r = self.r
 
         assert entailment({And(p, r)}, p)
+
+    def test_entailment_3(self):
+        p = self.p
+        q = self.q
+        r = self.r
+
+        kb = {And(p, Biconditional(r, Or(p, q)))}
+
+        assert entailment(kb, r)
+
+    def test_entailment_tautology(self):
+        p = self.p
+
+        assert entailment({}, Or(p, Not(p)))
 
     def test_entailment_fail(self):
         """

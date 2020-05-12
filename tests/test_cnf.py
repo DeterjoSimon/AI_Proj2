@@ -39,3 +39,14 @@ class TestCnf(TestCase):
         belief = Biconditional(p, Implication(q, r))
         cnf = to_cnf(belief)
         assert cnf == And(Or(Or(Not(p), Not(q)), r), And(Or(q, p), Or(Not(r), p)))
+
+    def test_cnf_to_clauses(self):
+        p = self.p
+        q = self.q
+        r = self.r
+
+        belief = Biconditional(r, Or(p, q))
+
+        cnf = to_cnf(belief)
+        clauses = cnf_to_clauses(cnf)
+        assert clauses == {Or(Not(r), Or(p, q)), Or(Not(p), r), Or(Not(q), r)}

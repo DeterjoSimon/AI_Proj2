@@ -35,14 +35,9 @@ class TestBeliefBase(TestCase):
         bb.add(Belief(Or(p, q)))
         bb.add(Belief(Implication(p, q)))
 
-        remainders = bb._remainder(q)
+        remainders = bb._get_remainders(Belief(q))
 
-        for remainder in remainders:
-            print("======")
-            for r in remainder:
-                print(r)
-
-        assert False
+        assert remainders == [{Belief(p), Belief(Or(p, q))}, {Belief(Implication(p, q))}]
 
     def test_contraction(self):
         """

@@ -13,6 +13,13 @@ class Belief:
     def __str__(self):
         return self.formula.__str__() + " @ Order: " + self.order.__str__()
 
+    def __eq__(self, other):
+        return self.formula == self.formula and self.order == self.order
+        pass
+
+    def __hash__(self):
+        return hash(self.__str__())
+
 
 class BeliefBase:
     def __init__(self, kb: Set[Belief] = None):
@@ -34,16 +41,16 @@ class BeliefBase:
         if new_belief not in self.beliefs:
             self.beliefs.add(new_belief)
 
-    def _remainder(self, phi):
+    def _get_remainders(self, phi):
         """
         Find subsets which do not entail phi, disregarding order
         """
 
+        # Local function for finding all subsets
         def findsubsets(s, n):
-            return list(itertools.combinations(s, n))
+            return list(set(combination) for combination in itertools.combinations(s, n))
 
         N = len(self.beliefs) - 1
-
         remainders = []
 
         # Start with n - 1 size subsets and iterate to 1
@@ -51,11 +58,16 @@ class BeliefBase:
             n_size_subsets = findsubsets(self.beliefs, n)
 
             for subset in n_size_subsets:
-                # Create clauses of formulas
-                clauses = set([belief.formula for belief in subset])
+                # Check for a larger subset
+                c_prime_exists = sum([subset.issubset(remainder) for remainder in remainders]) > 0
 
-                if not entailment(clauses, phi):
-                    remainders += [clauses]
+                if not c_prime_exists:
+                    continue
+
+                # Create clauses of formulas and check that it does not entail phi
+                clauses = [belief.formula for belief in subset]
+                if not entailment(clauses, phi.formula):
+                    remainders.append(subset)
 
         return remainders
 
@@ -63,24 +75,12 @@ class BeliefBase:
         """
         Entrenchment based contraction
         """
-
-        # 1. Find all subsets of B which do not entail the new formula
-        # for belief in self.beliefs:
-
-        # 2. Get the inclusion-maximal subsets
+        # Get remainders of contracting with the belief
+        remainders = self._get_remainders(remove_belief)
 
         # 3. Partial Meet Contraction
 
-        # 4. Suck a dick
-        # dick = Penis("20cm", Color.Black)
-        # mouth = Body.Mouth(gag_reflex=False)
-        # while not dick.cum():
-        #   mouth.insert(dick)
-        #   time.sleep(0.5)
-        #   mouth.remove(dick)
-        #   time.sleep(0.5)
-
-        pass
+        return None
 
     def __str__(self):
         out = set()
