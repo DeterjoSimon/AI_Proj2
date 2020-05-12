@@ -9,4 +9,4 @@ class And(Formula):
         super().__init__(*formula)
 
     def __str__(self):
-        return self.formulas[0].__str__() + " ∧ " + self.formulas[1].__str__()
+        return "(" + self.formulas[0].__str__() + " ∧ " + self.formulas[1].__str__() + ")"

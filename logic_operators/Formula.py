@@ -18,7 +18,9 @@ class Formula:
         """
         Compare string representation of formulas
         """
-        return self.__str__() == other.__str__()
+        clean_str_self = self.__str__().replace("(", "").replace(")", "")
+        clean_str_other = other.__str__().replace("(", "").replace(")", "")
+        return clean_str_self == clean_str_other
 
     def __lt__(self, other):
         return self.__str__() < other.__str__()

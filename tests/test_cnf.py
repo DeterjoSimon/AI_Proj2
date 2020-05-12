@@ -30,7 +30,7 @@ class TestCnf(TestCase):
 
         belief = Implication(And(p, q), Not(r))
         cnf = to_cnf(belief)
-        assert cnf == And(And(Or(Or(Not(p), Not(q)))), Not(r))
+        assert cnf == Or(Or(Not(p), Not(q)), Not(r))
 
     def test_cnf_3(self):
         p = self.p

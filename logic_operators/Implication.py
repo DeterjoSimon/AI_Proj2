@@ -8,4 +8,4 @@ class Implication(Formula):
             raise ValueError("An implication can only have 2 elements")
 
     def __str__(self):
-        return self.formulas[0].__str__() + " → " + self.formulas[1].__str__()
+        return "(" + self.formulas[0].__str__() + " → " + self.formulas[1].__str__() + ")"

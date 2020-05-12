@@ -46,7 +46,6 @@ class TestEntailment(TestCase):
         clauses = {Or(p, q), Or(Not(q), p), Or(Not(p), r), Or(Not(p), s)}
 
         phi = And(And(p, r), s)
-        # Test if the formula: Not(p) is entailed from the KB
         assert entailment(clauses, phi)
 
     def test_entailment_fail(self):

@@ -1,4 +1,6 @@
 from typing import Set
+
+from cnf import to_cnf
 from logic_operators import *
 from resolution import resolve
 
@@ -13,7 +15,7 @@ def entailment(kb, phi):
     else:
         phi = Not(phi)
 
-    clauses: Set = kb.union({phi})  # TODO: Insert CNF function here
+    clauses: Set = kb.union({to_cnf(phi)})
 
     new = set()
 
