@@ -20,8 +20,8 @@ class TestCnf(TestCase):
 
         belief = Biconditional(r, Or(p, q))
 
-        clauses = to_cnf(belief)
-        assert clauses == {Or(Or(Not(r), p), q), Or(Not(p), r), Or(Not(q), r)}
+        cnf = to_cnf(belief)
+        assert cnf == And(And(Or(Not(r), Or(p, q)), Or(Not(p), r)), Or(Not(q), r))
 
     def test_cnf_2(self):
         p = self.p
@@ -29,13 +29,13 @@ class TestCnf(TestCase):
         r = self.r
 
         belief = Implication(And(p, q), Not(r))
-        clauses = to_cnf(belief)
-        assert clauses == {Or(Or(Not(p), Not(q)), Not(r))}
+        cnf = to_cnf(belief)
+        assert cnf == And(And(Or(Or(Not(p), Not(q)))), Not(r))
 
     def test_cnf_3(self):
         p = self.p
         q = self.q
         r = self.r
-        belief = Biconditional(And(p, q), Implication(Or(r, q), And(p, r)))
-        clauses = to_cnf(belief)
-        assert clauses == {Or(r, q), Or(Or(Not(p), Not(r)), q), Or(Or(r, Not(q)), Not(p))}
+        belief = Biconditional(p, Implication(q, r))
+        cnf = to_cnf(belief)
+        assert cnf == And(Or(Or(Not(p), Not(q)), r), And(Or(q, p), Or(Not(r), p)))

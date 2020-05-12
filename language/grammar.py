@@ -1,4 +1,5 @@
 import logging
+import ply.yacc as yacc
 
 from logic_operators import *
 
@@ -16,7 +17,7 @@ t_BICONDITIONAL = r'<->|<=>'  # Match <-> or <=>
 t_NOT = r'\bnot\b|-(?!>)|~'  # Match not or - (not succeeded by '>') or ~
 t_LPAREN = r'\('  # Match (
 t_RPAREN = r'\)'  # Match )
-t_PROPOSITION = r'[a-z]'  # Match any single char, upper or lowercase
+t_PROPOSITION = r'[a-z]'  # Match any single char, lowercase
 
 # Ignored characters
 t_ignore = " \t"
@@ -93,8 +94,6 @@ def p_expression_group(t):
 def p_error(t):
     print("Syntax error at '%s'" % t.value)
 
-
-import ply.yacc as yacc
 
 log = logging.getLogger()
 parser = yacc.yacc()
