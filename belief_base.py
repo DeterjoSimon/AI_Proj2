@@ -37,7 +37,7 @@ class BeliefBase:
         def find_subsets(s, n):
             return list(set(combination) for combination in itertools.combinations(s, n))
 
-        N = len(self.beliefs) - 1
+        N = len(self.beliefs)
         remainders = []
 
         # Start with n - 1 size subsets and iterate to 1
@@ -57,6 +57,9 @@ class BeliefBase:
                     remainders.append(subset)
 
         return remainders
+
+    def get_clauses(self):
+        return [belief.formula for belief in self.beliefs]
 
     def clear(self):
         self.beliefs = set()
@@ -97,6 +100,12 @@ class BeliefBase:
 
         # New belief base is intersection of selected elements
         self.beliefs = set.intersection(*best_remainders)
+
+    def __hash__(self):
+        return self.__str__()
+
+    def __eq__(self, other):
+        return self.__str__() == other.__str__()
 
     def __str__(self):
         out = set()
