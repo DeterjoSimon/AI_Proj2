@@ -44,8 +44,6 @@ class TestAGMPostulates(TestCase):
             if entails(clauses, belief.formula):
                 cn_bb.expand(belief)
 
-        print(f"Logical Consequence of Belief base: {cn_bb}")
-        print(f"Belief base: {bb}")
         assert cn_bb == bb
 
     def test_closure_contraction(self):
@@ -64,8 +62,6 @@ class TestAGMPostulates(TestCase):
             if entails(clauses, belief.formula):
                 cn_bb.expand(belief)
 
-        print(f"Logical Consequence of Belief base: {cn_bb}")
-        print(f"Belief base: {bb}")
         assert cn_bb == bb
 
     def test_success_contraction(self):
@@ -166,4 +162,75 @@ class TestAGMPostulates(TestCase):
 
         assert bb == bb2
 
+    def test_recovery_contraction(self):
+        bb = self.belief_base
+        bb2 = BeliefBase(self.belief_base.beliefs, selection_function=select_largest_set)
 
+        phi = self.p
+
+        bb.contract(Belief(phi))
+        bb.expand(Belief(phi))
+
+        assert bb.beliefs.issubset(bb2.beliefs)
+
+    def test_conjunctive_inclusion_contraction(self):
+        bb = self.belief_base
+        bb2 = BeliefBase(self.belief_base.beliefs, selection_function=select_largest_set)
+        phi = self.p
+        xi = self.q
+
+        # Phi is not a member of Belief Base
+        bb.contract(Belief(And(phi, xi)))
+
+        if entails(bb.get_clauses(), phi):
+            assert False
+
+        bb2.contract(Belief(phi))
+
+        assert bb.beliefs.issubset(bb2.beliefs)
+
+    def test_conjunctive_overlap_contraction(self):
+        bb = self.belief_base
+        bb2 = BeliefBase(self.belief_base.beliefs, selection_function=select_largest_set)
+        bb3 = BeliefBase(self.belief_base.beliefs, selection_function=select_largest_set)
+        phi = self.p
+        xi = self.q
+
+        # Phi is not a member of Belief Base
+        bb.contract(Belief(xi))
+        bb2.contract(Belief(phi))
+
+        bb3.contract(Belief(And(xi, phi)))
+
+        assert bb.beliefs.intersection(bb2.beliefs).issubset(bb3.beliefs)
+
+    def test_superexpansion_revision(self):
+        bb = self.belief_base
+        bb2 = BeliefBase(self.belief_base.beliefs, selection_function=select_largest_set)
+        phi = self.p
+        xi = self.q
+
+        # Phi is not a member of Belief Base
+        bb.revise(Belief(And(phi, xi)))
+
+        bb2.revise(Belief(phi))
+        bb2.expand(Belief(xi))
+
+        assert bb.beliefs.issubset(bb2.beliefs)
+
+    def test_subexpansion_revision(self):
+        bb = self.belief_base
+        bb2 = BeliefBase(self.belief_base.beliefs, selection_function=select_largest_set)
+        phi = self.p
+        xi = self.q
+
+        # Phi is not a member of Belief Base
+        bb.revise(Belief(phi))
+
+        if entails(bb.get_clauses(), Not(xi)):
+            assert False
+
+        bb.expand(Belief(xi))
+        bb2.revise(Belief(And(phi, xi)))
+
+        assert bb.beliefs.issubset(bb2.beliefs)
