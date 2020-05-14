@@ -41,6 +41,11 @@ def to_cnf(formula):
             rhs = val.formulas[1]
             return to_cnf(And(lhs, Not(rhs)))
 
+        elif isinstance(val, Biconditional):
+            lhs = val.formulas[0]
+            rhs = val.formulas[1]
+            return to_cnf(Biconditional(Not(lhs), rhs))
+
         return to_cnf(val)
 
     elif isinstance(formula, Or):

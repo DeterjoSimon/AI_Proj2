@@ -135,3 +135,35 @@ class TestAGMPostulates(TestCase):
         bb2.expand(Belief(phi))
 
         assert bb == bb2
+
+    def test_extensionality_contraction(self):
+        bb = self.belief_base
+        bb2 = BeliefBase(self.belief_base.beliefs, selection_function=select_largest_set)
+        phi = Implication(self.p, self.q)
+        xi = Or(Not(self.p), self.q)
+
+        # Phi is not a member of Belief Base
+        if entails({}, Biconditional(phi, xi)):
+            assert False
+
+        bb.contract(Belief(phi))
+        bb2.contract(Belief(xi))
+
+        assert bb == bb2
+
+    def test_extensionality_revision(self):
+        bb = self.belief_base
+        bb2 = BeliefBase(self.belief_base.beliefs, selection_function=select_largest_set)
+        phi = Or(self.p, self.q)
+        xi = Or(self.p, self.q)
+
+        # Phi is not a member of Belief Base
+        if not entails({}, Biconditional(phi, xi)):
+            assert False
+
+        bb.revise(Belief(phi))
+        bb2.revise(Belief(xi))
+
+        assert bb == bb2
+
+
