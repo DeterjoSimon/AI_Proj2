@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from logic_operators import *
-from resolution import get_literals, resolve
+from engine.logic_operators import *
+from engine.resolution import get_literals, resolve
 
 
 class TestResolution(TestCase):

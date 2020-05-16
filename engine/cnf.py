@@ -1,4 +1,4 @@
-from logic_operators import *
+from engine.logic_operators import *
 
 
 def to_cnf(formula):
@@ -40,6 +40,11 @@ def to_cnf(formula):
             lhs = val.formulas[0]
             rhs = val.formulas[1]
             return to_cnf(And(lhs, Not(rhs)))
+
+        elif isinstance(val, Biconditional):
+            lhs = val.formulas[0]
+            rhs = val.formulas[1]
+            return to_cnf(Biconditional(Not(lhs), rhs))
 
         return to_cnf(val)
 

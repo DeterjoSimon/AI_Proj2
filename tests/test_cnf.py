@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from cnf import to_cnf, cnf_to_clauses
-from logic_operators import *
+from engine.cnf import to_cnf, cnf_to_clauses
+from engine.logic_operators import *
 
 
 class TestCnf(TestCase):

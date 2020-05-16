@@ -1,8 +1,9 @@
 import itertools
 from typing import Set
 
-from entailment import entails
-from logic_operators import Not
+from engine.entailment import entails
+from engine.logic_operators import Not
+
 
 class Belief:
     def __init__(self, formula, order=0):
@@ -37,7 +38,7 @@ class BeliefBase:
         def find_subsets(s, n):
             return list(set(combination) for combination in itertools.combinations(s, n))
 
-        N = len(self.beliefs) - 1
+        N = len(self.beliefs)
         remainders = []
 
         # Start with n - 1 size subsets and iterate to 1
@@ -58,25 +59,26 @@ class BeliefBase:
 
         return remainders
 
+    def get_clauses(self):
+        return [belief.formula for belief in self.beliefs]
+
     def clear(self):
         self.beliefs = set()
 
     def expand(self, new_belief):
         # Do not add tautologies or contradictions
-        if entails({}, new_belief) or not entails({}, new_belief):
+        if entails({}, new_belief.formula) or entails({}, Not(new_belief.formula)):
             return
 
         self.beliefs.add(new_belief)
 
     def revise(self, new_belief):
         # Do not add tautologies or contradictions
-        if entails({}, new_belief) or not entails({}, new_belief):
+        if entails({}, new_belief.formula) or entails({}, Not(new_belief.formula)):
             return
 
-        not_belief = new_belief
-        not_belief.formula = Not(not_belief.formula)
-
         # Levi identity
+        not_belief = Belief(Not(new_belief.formula), new_belief.order)
         self.contract(not_belief)
         self.expand(new_belief)
 
@@ -97,8 +99,14 @@ class BeliefBase:
         # Apply selection function
         best_remainders = self.selection_function(remainders)
 
-        # Return intersection of selected elements
-        return set.intersection(*best_remainders)
+        # New belief base is intersection of selected elements
+        self.beliefs = set.intersection(*best_remainders)
+
+    def __hash__(self):
+        return self.__str__()
+
+    def __eq__(self, other):
+        return self.__str__() == other.__str__()
 
     def __str__(self):
         out = set()

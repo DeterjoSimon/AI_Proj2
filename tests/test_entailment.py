@@ -1,8 +1,7 @@
 from unittest import TestCase
 
-from entailment import entails
-from resolution import get_literals, resolve
-from logic_operators import *
+from engine.entailment import entails
+from engine.logic_operators import *
 
 
 class TestEntailment(TestCase):

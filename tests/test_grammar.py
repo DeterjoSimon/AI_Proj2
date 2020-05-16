@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from language.grammar import parser
-from logic_operators import *
+from engine.language.grammar import parser
+from engine.logic_operators import *
 
 
 class Test_grammar(TestCase):

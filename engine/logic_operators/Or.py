@@ -1,4 +1,4 @@
-from logic_operators.Formula import Formula
+from engine.logic_operators.Formula import Formula
 
 
 class Or(Formula):
