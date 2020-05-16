@@ -1,4 +1,4 @@
-from logic_operators import Or, Not, Proposition, Par
+from engine.logic_operators import Or, Not, Proposition
 
 
 def disjunct(values):
@@ -13,9 +13,6 @@ def disjunct(values):
 def get_literals(clause):
     if isinstance(clause, Not) or isinstance(clause, Proposition):
         return [clause]
-
-    if isinstance(clause, Par):
-        return get_literals(clause.formulas[0])
     else:
         return get_literals(clause.formulas[0]) + get_literals(clause.formulas[1])
 

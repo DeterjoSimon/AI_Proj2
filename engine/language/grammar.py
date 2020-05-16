@@ -1,7 +1,7 @@
 import logging
 import ply.yacc as yacc
 
-from logic_operators import *
+from engine.logic_operators import *
 
 tokens = (
     'PROPOSITION', 'AND', 'OR',
@@ -88,7 +88,7 @@ def p_expression_negation(t):
 
 def p_expression_group(t):
     'expression : LPAREN expression RPAREN'
-    t[0] = Par(t[2])
+    t[0] = t[2]
 
 
 def p_error(t):
@@ -97,6 +97,11 @@ def p_error(t):
 
 log = logging.getLogger()
 parser = yacc.yacc()
+
+
+def parse(s):
+    return parser.parse(s)
+
 
 if __name__ == '__main__':
     while True:

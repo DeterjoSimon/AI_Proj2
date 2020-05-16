@@ -1,7 +1,6 @@
 from unittest import TestCase
 
-from belief_base import BeliefBase, Belief
-from logic_operators import *
+from engine.belief_base import BeliefBase, Belief
 
 
 def select_largest_set(remainders):

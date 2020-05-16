@@ -1,5 +1,5 @@
-from logic_operators import Proposition
-from logic_operators.Formula import Formula
+from engine.logic_operators.Proposition import Proposition
+from engine.logic_operators.Formula import Formula
 
 
 class Not(Formula):
@@ -11,10 +11,6 @@ class Not(Formula):
         super().__init__(*formula)
 
     def __str__(self):
-        if isinstance(self.formulas[0], Proposition):
-            return "¬" + self.formulas[0].__str__()
-        else:
-            return "¬" + "(" + self.formulas[0].__str__() + ")"
-
+        return "¬" + self.formulas[0].__str__()
 
 

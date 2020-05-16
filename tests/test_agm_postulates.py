@@ -1,8 +1,8 @@
 from unittest import TestCase
 
-from belief_base import BeliefBase, Belief
-from entailment import entails
-from logic_operators import *
+from engine.belief_base import BeliefBase, Belief
+from engine.entailment import entails
+from engine.logic_operators import *
 
 
 def select_largest_set(remainders):
@@ -15,7 +15,6 @@ class TestAGMPostulates(TestCase):
     q = Proposition("q")
 
     def setUp(self) -> None:
-        print("Setting up belief base")
         self.belief_base.clear()
         bb: BeliefBase = self.belief_base
         p = self.p

@@ -1,4 +1,4 @@
-from logic_operators import *
+from engine.logic_operators import *
 
 
 def to_cnf(formula):

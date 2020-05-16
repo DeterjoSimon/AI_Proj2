@@ -1,8 +1,8 @@
 from typing import Set
 
-from cnf import to_cnf, cnf_to_clauses
-from logic_operators import *
-from resolution import resolve
+from engine.cnf import to_cnf, cnf_to_clauses
+from engine.logic_operators import *
+from engine.resolution import resolve
 
 
 def entails(kb, phi):

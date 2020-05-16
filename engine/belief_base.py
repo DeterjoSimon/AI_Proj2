@@ -1,8 +1,9 @@
 import itertools
 from typing import Set
 
-from entailment import entails
-from logic_operators import Not
+from engine.entailment import entails
+from engine.logic_operators import Not
+
 
 class Belief:
     def __init__(self, formula, order=0):
