@@ -1,5 +1,6 @@
 import logging
 import ply.yacc as yacc
+import ply.lex as lex
 
 from engine.logic_operators import *
 
@@ -34,12 +35,9 @@ def t_error(t):
 
 
 # Build the lexer
-import ply.lex as lex
-
 lexer = lex.lex()
 
 # Parsing rules
-
 precedence = (
     ('left', 'AND'),
     ('left', 'OR'),
